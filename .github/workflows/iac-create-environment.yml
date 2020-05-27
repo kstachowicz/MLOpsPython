@@ -26,5 +26,6 @@ jobs:
       uses: azure/CLI@v1
       with:
         inlineScript: |
+          az group create -l westus -n rg-mlOpsPython-test
           az deployment group create --resource-group rg-mlOpsPython-test --template-file ./environment_setup/arm-templates/cloud-environment.json --parameters "{\"baseName\": {\"value\": \"github\"},\"workspace\": {\"value\": \"myworkspace\"}}"
     
