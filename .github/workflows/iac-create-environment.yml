@@ -1,0 +1,30 @@
+name: IaC-create-environment
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - ".github/workflows/iac-create-environment.yml"
+      - "environment_setup/arm-templates/cloud-environment.json"
+
+jobs:
+  deploy-environment:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Checkout source code
+      uses: actions/checkout@v2
+      
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - name: Deploy ARM Template
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az deployment group create --resource-group rg-mlOpsPython-test --template-file ./environment_setup/arm-templates/cloud-environment.json --parameters "{\"baseName\": {\"value\": \"github\"},\"workspace\": {\"value\": \"myworkspace\"}}"
+    
